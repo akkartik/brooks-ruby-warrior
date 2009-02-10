@@ -1,0 +1,50 @@
+Level 4
+
+Your ears become more in tune with the surroundings. Listen to find enemies and captives!
+
+Tip: Use warrior.listen to find spaces with other units, and warrior.direction_of to determine what direction they're in.
+
+ ----
+|C s |
+| @ S|
+|C s>|
+ ----
+
+  > = Stairs
+  @ = K (20 HP)
+  C = Captive (1 HP)
+  s = Sludge (12 HP)
+  S = Thick Sludge (24 HP)
+
+
+Available Abilities:
+
+  warrior.listen
+    Returns an array of all spaces which have units in them.
+
+  warrior.feel
+    Returns a Space for the given direction (forward by default).
+
+  warrior.rest!
+    Gain 10% of max health back, but do nothing more.
+
+  warrior.rescue!
+    Rescue a captive from his chains (earning 20 points) in given direction (forward by default).
+
+  warrior.direction_of_stairs
+    Returns the direction (:left, :right, :forward, :backward) the stairs are from your location.
+
+  warrior.health
+    Returns an integer representing your health.
+
+  warrior.attack!
+    Attack the unit in given direction (forward by default).
+
+  warrior.bind!
+    Bind unit in given direction to keep him from moving (forward by default).
+
+  warrior.walk!
+    Move in given direction (forward by default).
+
+  warrior.direction_of
+    Pass a Space as an argument, and the direction (:left, :right, :forward, :backward) to that space will be returned.

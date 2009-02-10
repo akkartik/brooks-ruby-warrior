@@ -17,10 +17,11 @@ class Player
 #?     return rescue! if captive_nearby?
     return walk! if feel.stairs?
     return rest! if needRest && !beingShotAt
+    return bind! if losing_health_too_fast
     return attack! unless feel.empty?
-#?     find_empty_direction
 
-    reverse_direction if walking_into_fire
+#?     find_empty_direction
+#?     reverse_direction if walking_into_fire
     walk!
   end
 
@@ -52,6 +53,11 @@ class Player
   def rest!
     @warrior.rest!
   end
+  def bind!
+    [:forward, :left, :right, :backward].each do |dir|
+      return @warrior.bind!(dir) unless @warrior.feel(dir).empty? || @warrior.feel(dir).captive?
+    end
+  end
   def feel
     @warrior.feel @direction
   end
@@ -74,6 +80,10 @@ class Player
     @health_history[-1] < @health_history[-2] && @health_history[-2] < @health_history[-3]
   rescue
     false
+  end
+
+  def losing_health_too_fast
+    !@prev_health.nil? && @prev_health-@curr_health > 2
   end
 
   def reverse_direction
