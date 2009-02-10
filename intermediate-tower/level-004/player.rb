@@ -1,12 +1,18 @@
+require 'coord'
+
 class Player
+  DIRS = [:forward, :left, :right, :backward]
+
   def initialize()
     @max_health = nil
-    @prev_health = nil
     @warrior = nil
     @direction = :forward
+
+    @prev_health = nil
     @health_history = []
-    @direction_history = []
-    @sludgesNearby = {}
+
+    @location = Coord.new
+    @hostiles = {@location => false}
   end
 
   def play_turn(warrior)
@@ -15,14 +21,23 @@ class Player
     @warrior = warrior
     updateHistory
 
-    return rescue! if captive_nearby? && !captiveWasSludge?
-    return walk! if feel.stairs?
-    return rest! if needRest && !losingHealth
-    return bind! if losingHealthTooFast
-    return attack! unless feel.empty?
+    setDirection
+    puts "#{@location.inspect} - #{@location.walk(@direction).inspect}"
+    $stdout.flush
 
-#?     find_empty_direction
-#?     reverse_direction if walking_into_fire
+    saveHostileInfo
+    p @hostiles
+    return rescue! if feel.captive? && !wasHostile?
+#?     puts "Exit? #{feel.stairs?}"
+    return walk! if feel.stairs?
+#?     puts "Rest? #{needRest} #{losingHealth}"
+    return rest! if needRest && !losingHealth
+#?     puts "Bind? #{losingHealthTooFast}"
+    return bind! if losingHealthTooFast
+#?     puts "Attack? #{feel.empty?}"
+    return attack! unless feel.empty?
+#?     puts "Walk!"
+
     walk!
   end
 
@@ -34,9 +49,17 @@ class Player
     @prev_health && @warrior.health < @prev_health
   end
 
-  def captiveWasSludge?
-    return @sludgesNearby[@direction] unless @sludgesNearby[@direction].nil?
-    @sludgesNearby[@direction] = @health_history[-3] && @health_history[-3] > @curr_health
+  def saveHostileInfo
+    DIRS.each do |dir|
+      target = @location.walk dir
+      next if @hostiles.has_key?(target)
+      target_space = @warrior.feel dir
+      @hostiles[target] = !(target_space.empty? || target_space.captive?)
+    end
+  end
+
+  def wasHostile?
+    @hostiles[@location.walk @direction]
   end
 
   def updateHistory
@@ -45,27 +68,29 @@ class Player
     @health_history << @curr_health
 
     @others = @warrior.listen
+  end
 
+  def setDirection
     @direction = @warrior.direction_of @warrior.listen[0]
-#?     @direction_history << @direction
+  rescue
+    @direction = @warrior.direction_of_stairs
   end
 
   def walk!
-    @sludgesNearby = {}
     @warrior.walk! @direction
+    @location = @location.walk(@direction)
   end
   def attack!
     @warrior.attack! @direction
   end
   def rescue!
-    p @direction
     @warrior.rescue! @direction
   end
   def rest!
     @warrior.rest!
   end
   def bind!
-    [:forward, :left, :right, :backward].each do |dir|
+    DIRS.each do |dir|
       return @warrior.bind!(dir) unless @warrior.feel(dir).empty? || @warrior.feel(dir).captive?
     end
   end
@@ -74,31 +99,19 @@ class Player
   end
 
   def captive_nearby?
-    [:forward, :left, :right, :backward].each do |dir|
+    DIRS.each do |dir|
       return @direction = dir if @warrior.feel(dir).captive?
     end
     nil
   end
 
   def find_empty_direction
-    [:forward, :left, :right, :backward].each do |dir|
+    DIRS.each do |dir|
       return @direction = dir if @warrior.feel(dir).empty?
     end
   end
 
-  def walking_into_fire
-    return false if @direction_history[-1] != @direction_history[-2] ||
-        @direction_history[-2] != @direction_history[-3]
-    @health_history[-1] < @health_history[-2] && @health_history[-2] < @health_history[-3]
-  rescue
-    false
-  end
-
   def losingHealthTooFast
-    !@prev_health.nil? && @prev_health-@curr_health > 2
-  end
-
-  def reverse_direction
-    @direction = (@direction == :forward) ? :backward : :forward
+    !@prev_health.nil? && @prev_health-@curr_health > 3
   end
 end

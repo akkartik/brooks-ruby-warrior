@@ -6,3 +6,7 @@ Done with level 3.
 Level 4 works with level 3's warrior. But I need to learn how to
 systematically capture all the captives, and kill all the hostiles.
 =-=1 - Mon Feb  9 19:56:12 PST 2009
+Added memory for hostile locations.
+But it turns out I need to be able to either approach from a different
+direction or find a different target.
+=-=2 - Tue Feb 10 09:42:24 PST 2009
