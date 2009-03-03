@@ -35,7 +35,7 @@ class Player
 #?     puts "Bind? #{losingHealthTooFast}"
     return bind! if losingHealthTooFast
 #?     puts "Attack? #{feel.empty?}"
-    return attack! unless feel.empty?
+    return attack! if isHostile?
 #?     puts "Walk!"
 
     walk!
@@ -60,6 +60,9 @@ class Player
 
   def wasHostile?
     @hostiles[@location.walk @direction]
+  end
+  def isHostile?
+    !feel.captive? && !feel.empty?
   end
 
   def updateHistory
