@@ -12,3 +12,7 @@ direction or find a different target.
 =-=2 - Tue Feb 10 09:42:24 PST 2009
 More from Feb 10.
 =-=3 - Mon Mar  2 18:23:03 PST 2009
+
+A different approach. I'm going to try a layered subsumption architecture like
+Rodney Brooks pioneered (MIT AI Memo 864)
+=-=4 - Wed Mar  4 09:24:55 PST 2009
