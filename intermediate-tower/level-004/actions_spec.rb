@@ -1,16 +1,42 @@
 require 'actions'
 
 describe Actions do
-  describe 'intersect' do
-    it 'should work' do
-      Actions.new({}).intersect(Actions.new({:walk! => []})).should be_empty
-      Actions.new({:walk! => [:left]}).intersect(Actions.new({:walk! => [:right]})).should be_empty
-      Actions.new({:walk! => [:left, :right]}).intersect(Actions.new({:walk! => [:right]})).should_not be_empty
+  describe 'drop' do
+    it 'should drop options one at a time' do
+      a = Actions.new
+      a.drop(:walk!, :left)
+      a.options[:walk!][:left].should == 0
     end
 
-    it 'should work for rest!' do
-      Actions.new({}).intersect(Actions.new({:rest! => 1})).should be_empty
-      Actions.new({:rest! => [1]}).intersect(Actions.new({:rest! => [1]})).should_not be_empty
+    it 'should drop multiple options' do
+      a = Actions.new
+      a.drop([[:walk!, :left], [:rescue!, :backward]])
+      a.options[:walk!][:left].should == 0
+      a.options[:rescue!][:backward].should == 0
+    end
+  end
+
+  describe 'intersect' do
+    it 'should work on full options' do
+      a = Actions.new
+      b = Actions.new
+      a.intersect(b).should == b.options
+    end
+
+    it 'should skip dropped options' do
+      a = Actions.new
+      b = Actions.new
+      a.drop(:walk!, :forward)
+      a.intersect(b)
+      a.options[:walk!][:forward].should == 0
+    end
+
+    it 'should skip dropped rest' do
+      a = Actions.new
+      b = Actions.new
+      a.drop(:rest!, :here)
+      a.intersect(b)
+      a.options[:rest!][:here].should == 0
     end
   end
 end

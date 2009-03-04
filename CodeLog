@@ -16,3 +16,14 @@ More from Feb 10.
 A different approach. I'm going to try a layered subsumption architecture like
 Rodney Brooks pioneered (MIT AI Memo 864)
 =-=4 - Wed Mar  4 09:24:55 PST 2009
+
+Better representation for tracking layers that want to highlight or drop
+options.
+When intersecting options by different layers we do a combination of min and
+max:
+  a) if either value is 0, the result drops to zero (min)
+  b) if neither value is 0, take the max.
+Each level will either set the option to a constant or drop it to zero. Higher
+layers will have higher constants. In this way they will take precedence over
+the choices of lower layers, but still be subject to their constraints.
+=-=5 - Wed Mar  4 10:38:56 PST 2009
