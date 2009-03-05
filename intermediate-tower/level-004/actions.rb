@@ -35,7 +35,7 @@ class Actions
   end
 
   def accentuate(action, dir, num=1)
-    @options[action][dir] += num
+    @options[action][dir] += num if @options[action][dir] > 0
   end
 
   def pick
