@@ -27,9 +27,14 @@ Each level will either set the option to a constant or drop it to zero. Higher
 layers will have higher constants. In this way they will take precedence over
 the choices of lower layers, but still be subject to their constraints.
 =-=5 - Wed Mar  4 10:38:56 PST 2009
-Starting Level 004 from scratch now. Simplest player: simply choose random
+Starting level 4 from scratch now. Simplest player: simply choose random
 actions to perform.
 =-=6 - Thu Mar  5 09:04:05 PST 2009
-level 0 is random options
-level 1 complete: picking among only valid choices
+layer 0 is random options
+layer 1 complete: picking among only valid choices
 =-=7 - Thu Mar  5 09:37:50 PST 2009
+layer 2: rest when you're low on health
+layer 3: run from fire
+We now have enough to finish level 4, but at a random walk staying out of
+trouble. No time bonus.
+=-=8 - Thu Mar  5 09:52:56 PST 2009

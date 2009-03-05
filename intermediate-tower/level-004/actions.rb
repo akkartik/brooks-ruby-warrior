@@ -34,8 +34,8 @@ class Actions
     end
   end
 
-  def accentuate(action, dir)
-    @options[action][dir] += 1
+  def accentuate(action, dir, num=1)
+    @options[action][dir] += num
   end
 
   def pick
