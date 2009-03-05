@@ -1,8 +1,9 @@
+ACTIONS = [:rest!, :walk!, :bind!, :attack!, :rescue!]
+DIRS = [:left, :right, :forward, :backward]
+
 class Actions
   attr_accessor :options
-
-  ACTIONS = [:rest!, :walk!, :bind!, :attack!, :rescue!]
-  DIRS = [:here, :left, :right, :forward, :backward]
+  ARGS = [:here, :left, :right, :forward, :backward]
 
   def initialize
     @options = {
@@ -59,11 +60,21 @@ class Actions
     cands[rand(cands.length)]
   end
 
+  def show_all_options
+    each {|a, d| puts "#{a} #{d}" if @options[a][d] > 0 rescue nil}
+  end
+
+  def show_options(action)
+    ARGS.each do |d|
+      puts d if @options[action][d] > 0 rescue nil
+    end
+  end
+
   private
 
   def each
     ACTIONS.each do |a|
-      DIRS.each do |d|
+      ARGS.each do |d|
         next if @options[a][d].nil?
         yield a, d
       end
