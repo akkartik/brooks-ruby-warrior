@@ -1,6 +1,9 @@
 class Actions
   attr_accessor :options
 
+  ACTIONS = [:rest!, :walk!, :bind!, :attack!, :rescue!]
+  DIRS = [:here, :left, :right, :forward, :backward]
+
   def initialize
     @options = {
       :rest! => {:here => 1},
@@ -34,7 +37,38 @@ class Actions
     @options[action][dir] += 1
   end
 
+  def pick
+    max_score = max
+    cands = select(max_score)
+    pick_among(cands)
+  end
+
+  def max
+    ans = 0
+    each {|a, d| ans = @options[a][d] if @options[a][d] > ans}
+    ans
+  end
+
+  def select(max_score)
+    ans = []
+    each {|a, d| ans << [a, d] if @options[a][d] == max_score}
+    ans
+  end
+
+  def pick_among(cands)
+    cands[rand(cands.length)]
+  end
+
   private
+
+  def each
+    ACTIONS.each do |a|
+      DIRS.each do |d|
+        next if @options[a][d].nil?
+        yield a, d
+      end
+    end
+  end
 
   def intersect_row(a, b)
     ans = {}
