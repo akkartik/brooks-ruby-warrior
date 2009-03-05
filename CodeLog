@@ -42,3 +42,5 @@ This bug could bite us later: allow higher levels to impose constraints as
 well. When an option gets dropped to 0 lower layers shouldn't be able to
 accentuate it.
 =-=9 - Thu Mar  5 10:49:59 PST 2009
+Planning out next several layers.
+=-=10 - Thu Mar  5 11:48:26 PST 2009
