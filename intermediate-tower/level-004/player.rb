@@ -2,36 +2,11 @@ require 'coord'
 require 'actions'
 
 class Player
-  def initialize
-    @health_history = []
-  end
-
-  def play_turn(warrior)
-    preprocess warrior
-    process_layers
-    pick_best_option
-    postprocess
-  end
-
-  def preprocess(warrior)
-    @warrior = warrior
-    @max_health ||= @warrior.health
-    @actions = Actions.new
-    # HACK: never bind
-    DIRS.each {|dir| @actions.drop(:bind!, dir)}
-  end
-
-  def postprocess
-    @health_history << @warrior.health
-  end
-
   # Layers
-  RUN = 5
+  AVOID = 5
   REST = 4
   UNBIND = 3
   PLAN = 2
-  INVALID = 1
-  RANDOM = 0
 
   def process_layers
     unbind_captives
@@ -51,13 +26,13 @@ class Player
     when 1
       DIRS.each {|d| @actions.emphasize(:attack!, d, PLAN) if hostile_space?(@warrior.feel(d))}
     when 0
-      @actions.emphasize(:walk!, @warrior.direction_of(@warrior.listen.first), PLAN)
+      @actions.emphasize(:walk!, @warrior.direction_of((@warrior.listen << @warrior.direction_of_stairs).first), PLAN)
     end
   end
 
   def run_from_fire
     return if @health_history.empty? || @warrior.health >= @health_history.last
-    DIRS.each {|d| @actions.emphasize(:walk!, d, RUN)}
+    DIRS.each {|d| @actions.emphasize(:walk!, d, AVOID)}
   end
 
   def rest_when_low_health
@@ -96,9 +71,33 @@ class Player
     !space.empty? && !space.captive? && !space.stairs? && !space.wall?
   end
 
-  # Layer 0: random
+  def play_turn(warrior)
+    preprocess warrior
+    process_layers
+    pick_best_option
+    postprocess
+  end
+
+  def initialize
+    @health_history = []
+    @action_history = []
+  end
+
+  def preprocess(warrior)
+    @warrior = warrior
+    @max_health ||= @warrior.health
+    @actions = Actions.new
+    # HACK: never bind
+    DIRS.each {|dir| @actions.drop(:bind!, dir)}
+  end
+
+  def postprocess
+    @health_history << @warrior.health
+  end
+
   def pick_best_option
     action, dir = @actions.pick
+    @action_history << [action, dir]
     action == :rest! ?
       @warrior.send(action) :
       @warrior.send(action, dir)
