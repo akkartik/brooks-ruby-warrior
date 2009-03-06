@@ -56,3 +56,7 @@ But the fact that we're spending so much time making level-0 (random)
 decisions in the presence of 2 hostiles highlights the hole in our decision
 space.
 =-=13 - Thu Mar  5 20:39:07 PST 2009
+Alternatives:
+  a) Track bad squares and avoid them.
+  b) On bad squares bind other targets and focus on one at a time. Remember bound hostiles from captives.
+=-=14 - Thu Mar  5 20:43:19 PST 2009

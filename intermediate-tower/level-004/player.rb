@@ -43,9 +43,9 @@ class Player
   end
 
   def rest_when_low_health
-    return if @action_history.empty?
     return if @warrior.health >= @max_health
-    return if @warrior.health >= @max_health/4 && @action_history.last[0] != :rest!
+    return if @action_history.empty?
+    return if @warrior.health > @max_health/4 && @action_history.last[0] != :rest!
     @actions.emphasize(:rest!, :here, REST)
   end
 
