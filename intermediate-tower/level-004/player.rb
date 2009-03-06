@@ -26,17 +26,27 @@ class Player
     when 1
       DIRS.each {|d| @actions.emphasize(:attack!, d, PLAN) if hostile_space?(@warrior.feel(d))}
     when 0
-      @actions.emphasize(:walk!, @warrior.direction_of((@warrior.listen << @warrior.direction_of_stairs).first), PLAN)
+      @actions.emphasize(:walk!, towards_next_goal, PLAN)
     end
+  end
+
+  def towards_next_goal
+    @warrior.direction_of(@warrior.listen.first)
+  rescue
+    @warrior.direction_of_stairs
   end
 
   def run_from_fire
     return if @health_history.empty? || @warrior.health >= @health_history.last
+#?     return if @health_history.size > 1 && @health_history[-1] >= @health_history[-2]
     DIRS.each {|d| @actions.emphasize(:walk!, d, AVOID)}
   end
 
   def rest_when_low_health
-    @actions.emphasize(:rest!, :here, REST) if @warrior.health < @max_health
+    return if @action_history.empty?
+    return if @warrior.health >= @max_health
+    return if @warrior.health >= @max_health/4 && @action_history.last[0] != :rest!
+    @actions.emphasize(:rest!, :here, REST)
   end
 
   # Layer 1: valid
@@ -98,6 +108,7 @@ class Player
   def pick_best_option
     action, dir = @actions.pick
     @action_history << [action, dir]
+    puts "Decision from level #{@actions.options[action][dir]-1}"
     action == :rest! ?
       @warrior.send(action) :
       @warrior.send(action, dir)
