@@ -34,7 +34,7 @@ class Actions
     end
   end
 
-  def accentuate(action, dir, num=1)
+  def emphasize(action, dir, num=1)
     @options[action][dir] += num if @options[action][dir] > 0
   end
 
@@ -61,7 +61,7 @@ class Actions
   end
 
   def show_all_options
-    each {|a, d| puts "#{a} #{d}" if @options[a][d] > 0 rescue nil}
+    each {|a, d| puts "#{a} #{d} #{@options[a][d]}" if @options[a][d] > 0 rescue nil}
   end
 
   def show_options(action)

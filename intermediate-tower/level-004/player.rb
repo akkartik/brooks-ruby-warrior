@@ -17,37 +17,51 @@ class Player
     @warrior = warrior
     @max_health ||= @warrior.health
     @actions = Actions.new
+    # HACK: never bind
+    DIRS.each {|dir| @actions.drop(:bind!, dir)}
   end
 
   def postprocess
     @health_history << @warrior.health
   end
 
+  # Layers
+  RUN = 5
+  REST = 4
+  UNBIND = 3
+  PLAN = 2
+  INVALID = 1
+  RANDOM = 0
+
   def process_layers
-    look_for_captives
-    look_for_hostiles
+    unbind_captives
+    chase_subgoals
     run_from_fire
     rest_when_low_health
     skip_invalid
   end
 
-  # Layer 5
-  def look_for_captives
+  def unbind_captives
+    DIRS.each {|d| @actions.emphasize(:rescue!, d, UNBIND) if @warrior.feel(d).captive?}
   end
 
-  # Layer 4
-  def look_for_hostiles
+  def chase_subgoals
+    num_hostiles = DIRS.inject(0) {|sum, d| hostile_space?(@warrior.feel(d)) ? sum+1 : sum}
+    case num_hostiles
+    when 1
+      DIRS.each {|d| @actions.emphasize(:attack!, d, PLAN) if hostile_space?(@warrior.feel(d))}
+    when 0
+      @actions.emphasize(:walk!, @warrior.direction_of(@warrior.listen.first), PLAN)
+    end
   end
 
-  # Layer 3
   def run_from_fire
     return if @health_history.empty? || @warrior.health >= @health_history.last
-    DIRS.each {|d| @actions.accentuate(:walk!, d, 3)}
+    DIRS.each {|d| @actions.emphasize(:walk!, d, RUN)}
   end
 
-  # Layer 2
   def rest_when_low_health
-    @actions.accentuate(:rest!, :here, 2) if @warrior.health < @max_health
+    @actions.emphasize(:rest!, :here, REST) if @warrior.health < @max_health
   end
 
   # Layer 1: valid
