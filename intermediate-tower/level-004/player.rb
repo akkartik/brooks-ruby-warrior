@@ -1,3 +1,5 @@
+require 'set'
+
 require 'coord'
 require 'actions'
 
@@ -17,7 +19,7 @@ class Player
   end
 
   def unbind_captives
-    DIRS.each {|d| @actions.emphasize(:rescue!, d, UNBIND) if @warrior.feel(d).captive?}
+    DIRS.each {|d| @actions.emphasize(:rescue!, d, UNBIND) if captive?(@warrior.feel(d))}
   end
 
   def chase_subgoals
@@ -37,8 +39,11 @@ class Player
   end
 
   def run_from_fire
-    return if @health_history.empty? || @warrior.health >= @health_history.last
-#?     return if @health_history.size > 1 && @health_history[-1] >= @health_history[-2]
+    return if @health_history.empty?
+
+    health_bound = @action_history.last[0] == :rest! ? @health_history.last : @health_history.last-3
+    return if @warrior.health >= health_bound
+
     DIRS.each {|d| @actions.emphasize(:walk!, d, AVOID)}
   end
 
@@ -78,7 +83,11 @@ class Player
   end
 
   def hostile_space?(space)
-    !space.empty? && !space.captive? && !space.stairs? && !space.wall?
+    !space.empty? && !space.captive? && !space.stairs? && !space.wall? && @hostile_captives.add(space)
+  end
+
+  def captive?(space)
+    space.captive? && !@hostile_captives.include?(space)
   end
 
   def play_turn(warrior)
@@ -91,6 +100,7 @@ class Player
   def initialize
     @health_history = []
     @action_history = []
+    @hostile_captives = Set.new
   end
 
   def preprocess(warrior)
