@@ -12,7 +12,7 @@ class Player
 
   def process_layers
     unbind_captives
-    chase_subgoals
+    manage_hostiles
     run_from_fire
     rest_when_low_health
     skip_invalid
@@ -22,13 +22,15 @@ class Player
     DIRS.each {|d| @actions.emphasize(:rescue!, d, UNBIND) if captive?(@warrior.feel(d))}
   end
 
-  def chase_subgoals
+  def manage_hostiles
     num_hostiles = DIRS.inject(0) {|sum, d| hostile_space?(@warrior.feel(d)) ? sum+1 : sum}
     case num_hostiles
     when 1
       DIRS.each {|d| @actions.emphasize(:attack!, d, PLAN) if hostile_space?(@warrior.feel(d))}
     when 0
       @actions.emphasize(:walk!, towards_next_goal, PLAN)
+    else
+      DIRS.each {|d| return @actions.emphasize(:bind!, d, PLAN) if hostile_space?(@warrior.feel(d))}
     end
   end
 
@@ -83,11 +85,11 @@ class Player
   end
 
   def hostile_space?(space)
-    !space.empty? && !space.captive? && !space.stairs? && !space.wall? && @hostile_captives.add(space)
+    !space.empty? && !space.captive? && !space.stairs? && !space.wall? && @hostile_captives.add(space.location)
   end
 
   def captive?(space)
-    space.captive? && !@hostile_captives.include?(space)
+    space.captive? && !@hostile_captives.include?(space.location)
   end
 
   def play_turn(warrior)
@@ -107,8 +109,6 @@ class Player
     @warrior = warrior
     @max_health ||= @warrior.health
     @actions = Actions.new
-    # HACK: never bind
-    DIRS.each {|dir| @actions.drop(:bind!, dir)}
   end
 
   def postprocess

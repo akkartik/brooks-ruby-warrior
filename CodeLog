@@ -23,7 +23,7 @@ When intersecting options by different layers we do a combination of min and
 max:
   a) if either value is 0, the result drops to zero (min)
   b) if neither value is 0, take the max.
-Each level will either set the option to a constant or drop it to zero. Higher
+Each layer will either set the option to a constant or drop it to zero. Higher
 layers will have higher constants. In this way they will take precedence over
 the choices of lower layers, but still be subject to their constraints.
 =-=5 - Wed Mar  4 10:38:56 PST 2009
@@ -38,7 +38,7 @@ layer 3: run from fire
 We now have enough to finish level 4, but at a random walk staying out of
 trouble. No time bonus.
 =-=8 - Thu Mar  5 09:52:56 PST 2009
-This bug could bite us later: allow higher levels to impose constraints as
+This bug could bite us later: allow higher layers to impose constraints as
 well. When an option gets dropped to 0 lower layers shouldn't be able to
 accentuate it.
 =-=9 - Thu Mar  5 10:49:59 PST 2009
@@ -52,7 +52,7 @@ health. Emphasize health and it takes forever to kill hostiles.
 Some reorg. Being more aggressive in managing health isn't quite working yet.
 =-=12 - Thu Mar  5 20:04:06 PST 2009
 Ok, now we rest only when health reserves are low.
-But the fact that we're spending so much time making level-0 (random)
+But the fact that we're spending so much time making layer-0 (random)
 decisions in the presence of 2 hostiles highlights the hole in our decision
 space.
 =-=13 - Thu Mar  5 20:39:07 PST 2009
@@ -63,3 +63,6 @@ Alternatives:
 I'm more aggressive about when I run away. But now I can't test my warrior's
 binding against 2 hostiles at once.
 =-=15 - Fri Mar  6 18:44:17 PST 2009
+Contrived a test case by changing the level. Binding works well, but we need
+another layer to unbind or we rely on layer 0 to eventually stumble upon it.
+=-=16 - Fri Mar  6 19:13:39 PST 2009
