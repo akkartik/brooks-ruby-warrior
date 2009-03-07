@@ -66,3 +66,7 @@ binding against 2 hostiles at once.
 Contrived a test case by changing the level. Binding works well, but we need
 another layer to unbind or we rely on layer 0 to eventually stumble upon it.
 =-=16 - Fri Mar  6 19:13:39 PST 2009
+Ok, we never need random moves in level 4 and we score a nice time bonus.
+But when there's lots of hostiles we're prone to hotfoot around between
+unfavorable squares.
+=-=17 - Fri Mar  6 19:34:47 PST 2009

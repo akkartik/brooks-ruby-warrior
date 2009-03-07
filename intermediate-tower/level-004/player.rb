@@ -23,14 +23,15 @@ class Player
   end
 
   def manage_hostiles
-    num_hostiles = DIRS.inject(0) {|sum, d| hostile_space?(@warrior.feel(d)) ? sum+1 : sum}
+    num_hostiles = DIRS.inject(0) {|sum, d| active_hostile?(@warrior.feel(d)) ? sum+1 : sum}
     case num_hostiles
     when 1
-      DIRS.each {|d| @actions.emphasize(:attack!, d, PLAN) if hostile_space?(@warrior.feel(d))}
+      DIRS.each {|d| @actions.emphasize(:attack!, d, PLAN) if active_hostile?(@warrior.feel(d))}
     when 0
+      DIRS.each {|d| return @actions.emphasize(:attack!, d, PLAN) if captive_hostile?(@warrior.feel(d))}
       @actions.emphasize(:walk!, towards_next_goal, PLAN)
     else
-      DIRS.each {|d| return @actions.emphasize(:bind!, d, PLAN) if hostile_space?(@warrior.feel(d))}
+      DIRS.each {|d| return @actions.emphasize(:bind!, d, PLAN) if active_hostile?(@warrior.feel(d))}
     end
   end
 
@@ -70,10 +71,10 @@ class Player
   end
 
   def skip_invalid_attacks
-    DIRS.each {|dir| @actions.drop(:attack!, dir) unless hostile_space?(@warrior.feel(dir))}
+    DIRS.each {|dir| @actions.drop(:attack!, dir) unless hostile?(@warrior.feel(dir))}
   end
   def skip_invalid_binds
-    DIRS.each {|dir| @actions.drop(:bind!, dir) unless hostile_space?(@warrior.feel(dir))}
+    DIRS.each {|dir| @actions.drop(:bind!, dir) unless active_hostile?(@warrior.feel(dir))}
   end
 
   def skip_invalid_rescues
@@ -84,12 +85,20 @@ class Player
     @actions.drop(:rest!, :here) if @warrior.health == @max_health
   end
 
-  def hostile_space?(space)
+  def hostile?(space)
+    active_hostile?(space) || captive_hostile?(space)
+  end
+
+  def active_hostile?(space)
     !space.empty? && !space.captive? && !space.stairs? && !space.wall? && @hostile_captives.add(space.location)
   end
 
+  def captive_hostile?(space)
+    !space.empty? && @hostile_captives.include?(space.location)
+  end
+
   def captive?(space)
-    space.captive? && !@hostile_captives.include?(space.location)
+    space.captive? && !captive_hostile?(space)
   end
 
   def play_turn(warrior)
