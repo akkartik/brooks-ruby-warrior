@@ -1,0 +1,48 @@
+Level 5
+
+You can feel the stairs right next to you, but are you sure you want to go up them right away?
+
+Tip: You'll get more points for clearing the level first. Use warrior.feel.stairs? and warrior.feel.empty? to determine where to go.
+
+ -----
+|    S|
+|@> SC|
+ -----
+
+  > = Stairs
+  @ = K (20 HP)
+  S = Thick Sludge (24 HP)
+  C = Captive (1 HP)
+
+
+Available Abilities:
+
+  warrior.listen
+    Returns an array of all spaces which have units in them.
+
+  warrior.feel
+    Returns a Space for the given direction (forward by default).
+
+  warrior.rescue!
+    Rescue a captive from his chains (earning 20 points) in given direction (forward by default).
+
+  warrior.health
+    Returns an integer representing your health.
+
+  warrior.direction_of_stairs
+    Returns the direction (:left, :right, :forward, :backward) the stairs are from your location.
+
+  warrior.walk!
+    Move in given direction (forward by default).
+
+  warrior.bind!
+    Bind unit in given direction to keep him from moving (forward by default).
+
+  warrior.attack!
+    Attack the unit in given direction (forward by default).
+
+  warrior.direction_of
+    Pass a Space as an argument, and the direction (:left, :right, :forward, :backward) to that space will be returned.
+
+  warrior.rest!
+    Gain 10% of max health back, but do nothing more.

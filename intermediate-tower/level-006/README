@@ -1,0 +1,48 @@
+Level 6
+
+What's that ticking? Some captives have a timed bomb at their feet!
+
+Tip: It's best to rescue captives first that have space.ticking?, they'll soon go!
+
+ ------
+| SC  >|
+|@  SC |
+ ------
+
+  > = Stairs
+  @ = K (20 HP)
+  S = Thick Sludge (24 HP)
+  C = Captive (1 HP)
+
+
+Available Abilities:
+
+  warrior.feel
+    Returns a Space for the given direction (forward by default).
+
+  warrior.walk!
+    Move in given direction (forward by default).
+
+  warrior.listen
+    Returns an array of all spaces which have units in them.
+
+  warrior.health
+    Returns an integer representing your health.
+
+  warrior.bind!
+    Bind unit in given direction to keep him from moving (forward by default).
+
+  warrior.attack!
+    Attack the unit in given direction (forward by default).
+
+  warrior.direction_of_stairs
+    Returns the direction (:left, :right, :forward, :backward) the stairs are from your location.
+
+  warrior.rest!
+    Gain 10% of max health back, but do nothing more.
+
+  warrior.rescue!
+    Rescue a captive from his chains (earning 20 points) in given direction (forward by default).
+
+  warrior.direction_of
+    Pass a Space as an argument, and the direction (:left, :right, :forward, :backward) to that space will be returned.

@@ -1,0 +1,24 @@
+The fact that we're spending so much time making level-0 (random) decisions in
+the presence of 2 hostiles highlights the hole in our decision space.
+
+Alternatives:
+  a) Track bad squares and avoid them.
+  b) On bad squares bind other targets and focus on one at a time. Remember bound hostiles from captives.
+
+Ways to break an impasse between layers:
+  a) Try juggling the layers around
+  b) Create a new 'synthesis' layer
+  c) Make lower layers smarter in detecting constraints
+     Be careful though; don't make constraints heuristics
+
+Level should be proportional to sophistication, not necessarily weight of the vote.
+
+Reasons to order layers:
+  Importance
+  Sophistication (using data from lower layers)
+
+We want lower layers to be narrow but have higher weight. And for higher
+layers to be more broadly applicable but overrideable by lower layers.
+
+drop vs accentuate
+accentuate lower vs higher layers
